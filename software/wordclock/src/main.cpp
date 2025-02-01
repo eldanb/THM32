@@ -15,8 +15,6 @@ void setup()
 int frame = 0;
 void loop()
 {
-  // Serial.println("Ok");
-
   for (int i = 0; i < 256; i++)
   {
     int base = (50 - min(abs(frame - i * 12), 50)) * 2;
