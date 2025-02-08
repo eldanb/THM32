@@ -1,35 +1,47 @@
 #include <Arduino.h>
 #include <FastLED.h>
+#include "led_animations.h"
 
 #define NUM_LEDS 256
 #define DATA_PIN 16
 
-CRGB leds[NUM_LEDS];
+CRGB leds[NUM_LEDS] = {0};
+LedAnimationController ledAnimationController(leds, 16, 16);
+
+int lastFrameMillis;
 
 void setup()
 {
   Serial.begin(115200);
-  FastLED.addLeds<NEOPIXEL, DATA_PIN>(leds, NUM_LEDS);
+  FastLED.addLeds<WS2812B, DATA_PIN, EOrder::GRB>(leds, NUM_LEDS);
+  lastFrameMillis = millis();
+
+#define LEDCORD 3, 3
+
+  ledAnimationController.addAnimation(LEDCORD, {targetColor : CRGB{255, 255, 255}, lenFrames : 400});
+  ledAnimationController.addAnimation(LEDCORD, {targetColor : CRGB{128, 0, 0}, lenFrames : 800});
+  ledAnimationController.addAnimation(LEDCORD, {targetColor : CRGB{0, 128, 0}, lenFrames : 800});
+  ledAnimationController.addAnimation(LEDCORD, {targetColor : CRGB{0, 0, 128}, lenFrames : 800});
+  ledAnimationController.addAnimation(LEDCORD, {targetColor : CRGB{0, 0, 0}, lenFrames : 400});
 }
 
-int frame = 0;
 void loop()
 {
-  for (int i = 0; i < 256; i++)
+  int newFrameMillis = millis();
+
+  if (random() % 100 == 1)
   {
-    int base = (50 - min(abs(frame - i * 12), 50)) * 2;
-    leds[i].r = base * ((i % 10) > 3 ? 1 : 0);
-    leds[i].g = base * ((i % 10) < 7 ? 1 : 0);
-    leds[i].b = base * ((i % 10) > 2 ? 1 : 0);
+    int x = random() % 16;
+    int y = random() % 16;
+
+    ledAnimationController.addAnimation(x, y, {targetColor : CRGB{255, 255, 255}, lenFrames : 400});
+    ledAnimationController.addAnimation(x, y, {targetColor : CRGB{128, 0, 0}, lenFrames : 800});
+    ledAnimationController.addAnimation(x, y, {targetColor : CRGB{0, 128, 0}, lenFrames : 800});
+    ledAnimationController.addAnimation(x, y, {targetColor : CRGB{0, 0, 128}, lenFrames : 800});
+    ledAnimationController.addAnimation(x, y, {targetColor : CRGB{0, 0, 0}, lenFrames : 400});
   }
-  //  leds[0] = CRGB::White;
+
+  ledAnimationController.animate(newFrameMillis - lastFrameMillis);
+  lastFrameMillis = newFrameMillis;
   FastLED.show();
-  //  leds[0] = CRGB::Black;
-  //  FastLED.show();
-  //  delay(500);
-  frame = frame + 1;
-  if (frame > 256 * 12)
-  {
-    frame = 0;
-  }
 }
