@@ -30,29 +30,32 @@ void LedAnimationController::clearAnimations()
   while (_animators.size())
   {
     removeAnimator(_animators.front());
-    _animators.pop_front();
   }
 }
 
 void LedAnimationController::clearAnimation(int col, int row, CRGB targetColor)
+{
+  clearAnimation(col, row);
+  index(_leds, col, row) = targetColor;
+}
+
+void LedAnimationController::clearAnimation(int col, int row)
 {
   auto animator = index(_animatorsForLeds, col, row);
   if (animator)
   {
     removeAnimator(animator);
   }
-
-  index(_leds, col, row) = targetColor;
 }
 
-void LedAnimationController::animate(int framesToAdvance)
+void LedAnimationController::animate(int targetFrame)
 {
   std::list<LedAnimationController::LedAnimator *> toRemove;
 
   for (auto iter = _animators.begin(); iter != _animators.end(); iter++)
   {
     auto animator = *iter;
-    if (!animator->animate(framesToAdvance))
+    if (!animator->animate(targetFrame))
     {
       toRemove.push_back(animator);
     }
@@ -70,8 +73,34 @@ void LedAnimationController::removeAnimator(LedAnimationController::LedAnimator 
   _animators.remove(animator);
 }
 
+void LedAnimationController::setAllToColor(CRGB targetColor, int frame)
+{
+  clearAnimations();
+
+  for (int row = 0; row < _numRows; row++)
+  {
+    for (int col = 0; col < _numCols; col++)
+    {
+      if (index(_leds, col, row) != targetColor)
+      {
+        addAnimation(col, row, AnimationStep{targetColor : targetColor, targetFrame : frame});
+      }
+    }
+  }
+}
+
+int LedAnimationController::getRowCount()
+{
+  return _numRows;
+}
+
+int LedAnimationController::getColumnCount()
+{
+  return _numCols;
+}
+
 LedAnimationController::LedAnimator::LedAnimator(CRGB *led, LedAnimator *&backRef)
-    : _led(led), _backRef(backRef), _nominatorCurrent{0, 0, 0}, _nominatorStep{0, 0, 0}, _denominator(1), _framesLeft(0)
+    : _led(led), _backRef(backRef), _nominatorCurrent{0, 0, 0}, _nominatorStep{0, 0, 0}, _denominator(1), _endFrame(0), _currentFrame(millis())
 {
 }
 
@@ -96,59 +125,40 @@ inline void interpolateChannel(uint8_t &channel, int &nominatorCurrent, int nomi
   }
 }
 
-bool LedAnimationController::LedAnimator::animate(int framesToAdvance)
+bool LedAnimationController::LedAnimator::animate(int targetFrame)
 {
-  // Serial.printf("Advance %d frames @%d \n", framesToAdvance, millis());
-
-  while (framesToAdvance)
+  while (_currentFrame < targetFrame)
   {
-    if (_framesLeft)
+    if (_currentFrame < _endFrame)
     {
-      if (_framesLeft > framesToAdvance)
+      if (_endFrame > targetFrame)
       {
-        // Serial.printf("(%d,%d,%d) [%d, %d, %d] / %d + [%d, %d, %d] / %d * %d  ==> ",
-        //               _led->red, _led->green, _led->blue,
-        //               _nominatorCurrent[0], _nominatorCurrent[1], _nominatorCurrent[2],
-        //               _denominator,
-        //               _nominatorStep[0], _nominatorStep[1], _nominatorStep[2],
-        //               _denominator,
-        //               framesToAdvance);
+        int framesToAdvance = targetFrame - _currentFrame;
 
         interpolateChannel(_led->red, _nominatorCurrent[0], _nominatorStep[0] * framesToAdvance, _denominator);
         interpolateChannel(_led->green, _nominatorCurrent[1], _nominatorStep[1] * framesToAdvance, _denominator);
         interpolateChannel(_led->blue, _nominatorCurrent[2], _nominatorStep[2] * framesToAdvance, _denominator);
 
-        _framesLeft -= framesToAdvance;
-        framesToAdvance = 0;
+        _currentFrame = targetFrame;
       }
       else
       {
-        // Serial.printf("End of step (%d,%d,%d)  ==> ", _led->red, _led->green, _led->blue);
-
         *_led = _targetColor;
-
-        framesToAdvance -= _framesLeft;
-        _framesLeft = 0;
+        _currentFrame = _endFrame;
       }
-
-      // Serial.printf("(%d,%d,%d)\n",
-      //               _led->red, _led->green, _led->blue);
     }
     else
     {
       if (_steps.empty())
       {
-        // Serial.printf("Animatino done\n");
         return false;
       }
-
-      // Serial.printf("Next step\n");
 
       auto step = _steps.front();
       _steps.pop_front();
 
-      _framesLeft = step.lenFrames;
-      _denominator = step.lenFrames;
+      _endFrame = step.targetFrame;
+      _denominator = _endFrame - _currentFrame;
 
       memset(&_nominatorCurrent, 0, sizeof(_nominatorCurrent));
 

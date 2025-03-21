@@ -11,7 +11,7 @@ public:
   struct AnimationStep
   {
     CRGB targetColor;
-    int lenFrames;
+    int targetFrame;
   };
 
 public:
@@ -19,9 +19,14 @@ public:
   ~LedAnimationController();
 
   void addAnimation(int col, int row, const AnimationStep &animationStep);
-  void clearAnimation(int col, int row, CRGB targettColor);
+  void clearAnimation(int col, int row, CRGB targetColor);
+  void clearAnimation(int col, int row);
   void clearAnimations();
-  void animate(int framesToAdvance);
+  void animate(int targetFrame);
+  void setAllToColor(CRGB targettColor, int frame);
+
+  int getRowCount();
+  int getColumnCount();
 
 private:
   class LedAnimator
@@ -30,7 +35,7 @@ private:
     LedAnimator(CRGB *led, LedAnimator *&backRef);
 
     void addStep(const AnimationStep &step);
-    bool animate(int framesToAdvance);
+    bool animate(int targetFrame);
     LedAnimator *&backRef();
 
   private:
@@ -38,7 +43,9 @@ private:
     int _nominatorStep[3];
     CRGB _targetColor;
     int _denominator;
-    int _framesLeft;
+
+    int _currentFrame;
+    int _endFrame;
 
     CRGB *_led;
     LedAnimator *&_backRef;
@@ -54,8 +61,8 @@ private:
   {
     return array[(row / 2) * (2 * _numCols) +
                  ((row % 2 == 0)
-                      ? col
-                      : 2 * _numCols - 1 - col)];
+                      ? _numCols - 1 - col
+                      : _numCols + col)];
   }
 
   CRGB *_leds;

@@ -10,6 +10,7 @@
             "includePath": [
                 "/Users/eldan/dev/priv/THM32/software/wordclock/include",
                 "/Users/eldan/dev/priv/THM32/software/wordclock/src",
+                "/Users/eldan/.platformio/packages/framework-arduinoespressif32/libraries/WiFi/src",
                 "/Users/eldan/dev/priv/THM32/software/wordclock/.pio/libdeps/prod/FastLED/src",
                 "/Users/eldan/.platformio/packages/framework-arduinoespressif32/libraries/SPI/src",
                 "/Users/eldan/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/newlib/platform_include",
@@ -236,7 +237,6 @@
                 "/Users/eldan/.platformio/packages/framework-arduinoespressif32/libraries/USB/src",
                 "/Users/eldan/.platformio/packages/framework-arduinoespressif32/libraries/Update/src",
                 "/Users/eldan/.platformio/packages/framework-arduinoespressif32/libraries/WebServer/src",
-                "/Users/eldan/.platformio/packages/framework-arduinoespressif32/libraries/WiFi/src",
                 "/Users/eldan/.platformio/packages/framework-arduinoespressif32/libraries/WiFiClientSecure/src",
                 "/Users/eldan/.platformio/packages/framework-arduinoespressif32/libraries/WiFiProv/src",
                 "/Users/eldan/.platformio/packages/framework-arduinoespressif32/libraries/Wire/src",
@@ -247,6 +247,7 @@
                 "path": [
                     "/Users/eldan/dev/priv/THM32/software/wordclock/include",
                     "/Users/eldan/dev/priv/THM32/software/wordclock/src",
+                    "/Users/eldan/.platformio/packages/framework-arduinoespressif32/libraries/WiFi/src",
                     "/Users/eldan/dev/priv/THM32/software/wordclock/.pio/libdeps/prod/FastLED/src",
                     "/Users/eldan/.platformio/packages/framework-arduinoespressif32/libraries/SPI/src",
                     "/Users/eldan/.platformio/packages/framework-arduinoespressif32/tools/sdk/esp32/include/newlib/platform_include",
@@ -473,7 +474,6 @@
                     "/Users/eldan/.platformio/packages/framework-arduinoespressif32/libraries/USB/src",
                     "/Users/eldan/.platformio/packages/framework-arduinoespressif32/libraries/Update/src",
                     "/Users/eldan/.platformio/packages/framework-arduinoespressif32/libraries/WebServer/src",
-                    "/Users/eldan/.platformio/packages/framework-arduinoespressif32/libraries/WiFi/src",
                     "/Users/eldan/.platformio/packages/framework-arduinoespressif32/libraries/WiFiClientSecure/src",
                     "/Users/eldan/.platformio/packages/framework-arduinoespressif32/libraries/WiFiProv/src",
                     "/Users/eldan/.platformio/packages/framework-arduinoespressif32/libraries/Wire/src",
@@ -481,7 +481,7 @@
                 ]
             },
             "defines": [
-                "PLATFORMIO=60116",
+                "PLATFORMIO=60117",
                 "ARDUINO_ESP32_DEV",
                 "HAVE_CONFIG_H",
                 "MBEDTLS_CONFIG_FILE=\"mbedtls/esp_config.h\"",
