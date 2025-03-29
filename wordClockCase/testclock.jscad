@@ -45,11 +45,6 @@ const diffuserThickness = 1;
 const frameThickness = 3;
 const frameDepth = 18;
 
-const hatchWidth = 20;
-const hatchHeight = 10;
-const hatchThickness = 1.5;
-const hatchSpace = 1;
-
 const coverInset = 2;
 const bulgeHeight = 50;
 const bulgeDepth = 50;
@@ -175,8 +170,6 @@ function diffuser() {
 
 
 function watchOuterFrame() {
-  const hatchZ = hatchThickness / 2 + letterDepth / 2 - frameDepth + coverInset + hatchSpace;
-
   return modeling.booleans.union(
     // Frame with cover subtracted
     modeling.booleans.subtract(
@@ -189,48 +182,6 @@ function watchOuterFrame() {
 
       watchBackCover()
     ),
-
-    // Top hatch
-    modeling.primitives.cuboid({
-      size: [
-        hatchWidth,
-        hatchHeight,
-        hatchThickness],
-
-      center: [
-        0,
-        (numRows * cellSize - hatchHeight) / 2,
-        hatchZ
-      ]
-    }),
-
-    // left Hatch
-    modeling.primitives.cuboid({
-      size: [
-        hatchHeight,
-        hatchWidth,
-        hatchThickness],
-
-      center: [
-        (numCols * cellSize - hatchHeight) / 2,
-        0,
-        hatchZ
-      ]
-    }),
-
-    // right Hatch
-    modeling.primitives.cuboid({
-      size: [
-        hatchHeight,
-        hatchWidth,
-        hatchThickness],
-
-      center: [
-        - (numCols * cellSize - hatchHeight) / 2,
-        0,
-        hatchZ
-      ]
-    })
   );
 }
 
@@ -243,7 +194,7 @@ function watchBackCover() {
         0,
         - coverInset / 2 + letterDepth / 2 - frameDepth + coverInset],
         modeling.primitives.cuboid({
-          size: [numCols * cellSize, numRows * cellSize, coverInset]
+          size: [numCols * cellSize + frameThickness, numRows * cellSize + frameThickness, coverInset]
         })),
 
       // Cover bulge
