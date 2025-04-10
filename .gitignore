@@ -3,3 +3,4 @@ THM32Hardware/fp-info-cache
 THM32Hardware/thm32_fab*
 THM32Hardware/THM32Hardware-backups
 .pio
+software/wordclock/data

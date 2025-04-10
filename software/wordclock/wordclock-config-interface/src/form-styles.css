@@ -1,0 +1,95 @@
+
+.form-block {
+	padding: 0.75rem 1.5rem;
+  margin-top: 2rem;
+	border: 1px solid #000;
+	box-shadow: 0 15px 20px -12px #673ab888;
+	border-radius: 0.5rem;
+	text-align: left;
+	text-decoration: none;
+	color: #222;
+	background-color: #fafafa;
+	border: 1px solid transparent;
+
+	h1 {
+		font-size: 16px;
+    font-weight: 500;
+		margin: 1rem 0;
+	}	
+}
+
+.form-commands {
+  display: flex;  
+  margin-top: 2rem;
+
+  .spacer {
+    flex-grow: 1;
+  }
+}
+
+.form-container {
+	width: 40rem;	
+
+  table {
+		width: 100%;
+
+    border-spacing: 0 0.5rem;
+
+		:nth-child(1 of td) {
+			width: 10rem;
+		}
+
+		:nth-child(2 of td) {
+			input, select {
+        box-sizing: border-box;
+				width: 100%;
+
+        &[type="checkbox"] {
+          width: unset;          
+        }
+			}
+		}
+	}
+
+  input, select {
+    padding: 0.5rem;
+    border: solid 1px #e0e0e0;
+    border-radius: 0.5rem;
+    margin: 1px 1px;
+    background: #ffffff;
+
+    transition: border 0.3s, margin 0.3s;
+
+    &:hover, &:focus {
+      border-color: #673ab888;
+    }
+
+    &:focus {
+      outline:none;
+      border-width: 2px;
+      margin: 0;
+    }    
+  }
+  
+  select {
+    appearance: none;
+    background: white url(assets/dropdown-arrow.svg) no-repeat right 0px;
+    background-size: 1rem 100%;
+  }
+
+  button {
+    appearance: none;
+    border: none;
+    background: white;
+    border: solid 1px #673ab888;
+    border-radius: 0.5rem;
+    color: #673ab888;
+    font-size: 14px;
+    padding: 0.5rem 2rem;
+    transition: background-color 0.3s, color 0.3s;
+
+    &:hover {
+      background-color: #dacfef88;
+    }
+  }
+}

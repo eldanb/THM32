@@ -1,0 +1,33 @@
+export type ClockConfig = {
+  ssid?: string;
+  password: string;
+  timeZone: number;
+  isDst: boolean;
+};
+
+export type SSIDInfo = {
+  ssid: string;
+  rssi: string;
+  enc: number;
+};
+
+function getApiEndpointUrl(url: string): string {
+  return (
+    (import.meta.env.VITE_WORDCLOCK_HOST
+      ? `http://${import.meta.env.VITE_WORDCLOCK_HOST}`
+      : "") + url
+  );
+}
+
+async function invokeGetApi<TResult>(url: string): Promise<TResult> {
+  const response = await fetch(getApiEndpointUrl(url));
+  return (await response.json()) as TResult;
+}
+
+export function getConfig() {
+  return invokeGetApi<ClockConfig>("/config");
+}
+
+export function getSsids() {
+  return invokeGetApi<{ ssids: SSIDInfo[] }>("/ssids");
+}

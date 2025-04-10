@@ -13,7 +13,7 @@ WordBoard::WordBoard(const char *boardContents, LedAnimationController &animatio
 void WordBoard::displayText(const char *text, int startFrame, int *endFrameOutput)
 {
 #ifndef FIXED_ANIMATION_ID
-  int animation = rand() % 4;
+  int animation = rand() % 5;
 #else
   int animation = FIXED_ANIMATION_ID;
 #endif
