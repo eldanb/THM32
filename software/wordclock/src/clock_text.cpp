@@ -62,13 +62,13 @@ std::string timeToString(int hour, int minute)
 
   if (minute < 5)
   {
-    if (hour != 0)
+    if (hour != 0 && hour != 12)
     {
-      return hourName + " OCLOCK";
+      return "IT IS " + hourName + " OCLOCK";
     }
     else
     {
-      return hourName;
+      return "IT IS " + hourName;
     }
   }
   else

@@ -28,7 +28,7 @@ h1 {
 
 .horizontal-stack {
 	display: flex;
-	align-items: baseline;
+	align-items: center;
 }
 
 #app {

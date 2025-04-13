@@ -3,6 +3,9 @@ export type ClockConfig = {
   password: string;
   timeZone: number;
   isDst: boolean;
+
+  refreshPeriod: number;
+  brightness: number;
 };
 
 export type SSIDInfo = {
@@ -24,8 +27,26 @@ async function invokeGetApi<TResult>(url: string): Promise<TResult> {
   return (await response.json()) as TResult;
 }
 
+async function invokePostApi<TResult>(
+  url: string,
+  body: any
+): Promise<TResult> {
+  const response = await fetch(getApiEndpointUrl(url), {
+    body: JSON.stringify(body),
+    headers: {
+      "Content-Type": "application/json",
+    },
+    method: "POST",
+  });
+  return (await response.json()) as TResult;
+}
+
 export function getConfig() {
   return invokeGetApi<ClockConfig>("/config");
+}
+
+export function setConfig(config: ClockConfig) {
+  return invokePostApi<{}>("/config", config);
 }
 
 export function getSsids() {

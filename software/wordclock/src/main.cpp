@@ -65,6 +65,7 @@ LedAnimationController ledAnimationController(leds, BOARD_SIZE, BOARD_SIZE);
 WordBoard wordBoard(boardLetters, ledAnimationController);
 
 int lastFrameMillis;
+int refreshPeriod = 60 * 1000;
 
 void clearBoardAndShowText(const char *text, int startAtMillis = -1)
 {
@@ -127,20 +128,22 @@ void setup()
   FFat.begin();
   FastLED.addLeds<WS2812B, DATA_PIN, EOrder::GRB>(leds, NUM_LEDS);
 
-  lastFrameMillis = millis() - 120000;
-
   setupConfig();
   setupNetwork();
   syncTime();
 
   setupConfigServer();
+
+  lastFrameMillis = millis() - 120000;
+  refreshPeriod = getConfig().containsKey("refreshPeriod") ? (getConfig()["refreshPeriod"].as<int>() * 1000) : (60 * 1000);
+  FastLED.setBrightness(getConfig().containsKey("brightness") ? (getConfig()["brightness"].as<int>() * 255 / 100) : 255);
 }
 
 void loop()
 {
   int newFrameMillis = millis();
 
-  if (newFrameMillis / (60 * 1000) != lastFrameMillis / (60 * 1000))
+  if (newFrameMillis / (refreshPeriod) != lastFrameMillis / refreshPeriod)
   {
     refreshBoardTime();
   }
