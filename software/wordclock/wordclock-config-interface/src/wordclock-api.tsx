@@ -14,6 +14,16 @@ export type SSIDInfo = {
   enc: number;
 };
 
+export type ManualTimeSetting = {
+  year: number;
+  month: number;
+  day: number;
+
+  hour: number;
+  minute: number;
+  second: number;
+};
+
 function getApiEndpointUrl(url: string): string {
   return (
     (import.meta.env.VITE_WORDCLOCK_HOST
@@ -51,4 +61,8 @@ export function setConfig(config: ClockConfig) {
 
 export function getSsids() {
   return invokeGetApi<{ ssids: SSIDInfo[] }>("/ssids");
+}
+
+export function setManualTime(time: ManualTimeSetting) {
+  return invokePostApi<{}>("/manual-time", time);
 }

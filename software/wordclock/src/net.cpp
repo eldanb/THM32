@@ -40,7 +40,10 @@ bool setupNetwork()
       WiFi.begin(ssid, password);
     }
 
-    waitForWifiStatus(WL_CONNECTED);
+    if (!waitForWifiStatus(WL_CONNECTED))
+    {
+      WiFi.disconnect();
+    }
   }
 
   String macStr = WiFi.macAddress();

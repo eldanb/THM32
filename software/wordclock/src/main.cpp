@@ -15,12 +15,9 @@
 #define DATA_PIN 16
 #define BOARD_SIZE 16
 
-#define SSID "tazmania-guest"
-#define PASSWORD "fragicali"
-
 #define TZ_GMTOFFSET_SEC 7200
 #define TZ_DST_OFFSET_SEC 3600
-#define NTP_SERVER "europe.pool.ntp.org"
+#define NTP_SERVER "il.pool.ntp.org"
 
 #ifdef SHACHAR_BOARD
 static const char *boardLetters =
@@ -57,7 +54,7 @@ static const char *boardLetters =
     "WINDYBSUNNYRKFOR"
     "STORMYRIKCDINNER"
     "CHILLYFWARMKTOMU"
-    "GONLUNCHLBREAKDS";
+    "GONLUNCHLBREAKAE";
 #endif
 
 CRGB leds[NUM_LEDS] = {0};

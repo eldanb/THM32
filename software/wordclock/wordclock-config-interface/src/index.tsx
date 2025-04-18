@@ -6,13 +6,104 @@ import {
   ClockConfig,
   getConfig,
   getSsids,
+  ManualTimeSetting,
   setConfig,
+  setManualTime,
   SSIDInfo,
 } from "./wordclock-api";
 
+function TimeSetPanel() {
+  const nowDate = new Date();
+  const { state, bindFormControls } = useFormUtils<ManualTimeSetting>({
+    year: nowDate.getFullYear(),
+    month: nowDate.getMonth() + 1,
+    day: nowDate.getDate(),
+    hour: nowDate.getHours(),
+    minute: nowDate.getMinutes(),
+    second: nowDate.getSeconds(),
+  });
+
+  const setTime = async () => {
+    await setManualTime(state);
+  };
+
+  return (
+    <>
+      <div className="time-set-panel">
+        <div className="low-label">
+          <input
+            type="number"
+            min={1}
+            max={31}
+            {...bindFormControls("day", (element) => parseInt(element.value))}
+          />
+          <label>Day</label>
+        </div>
+        /
+        <div className="low-label">
+          <input
+            type="number"
+            min={1}
+            max={12}
+            {...bindFormControls("month", (element) => parseInt(element.value))}
+          />
+          <label>Month</label>
+        </div>
+        /
+        <div className="low-label">
+          <input
+            type="number"
+            min={2020}
+            max={2090}
+            {...bindFormControls("year", (element) => parseInt(element.value))}
+          />
+          <label>Year</label>
+        </div>
+        &nbsp; &nbsp;
+        <div className="low-label">
+          <input
+            type="number"
+            min={0}
+            max={23}
+            {...bindFormControls("hour", (element) => parseInt(element.value))}
+          />
+          <label>Hour</label>
+        </div>
+        :
+        <div className="low-label">
+          <input
+            type="number"
+            min={0}
+            max={23}
+            {...bindFormControls("minute", (element) =>
+              parseInt(element.value)
+            )}
+          />
+          <label>Minute</label>
+        </div>
+        :
+        <div className="low-label">
+          <input
+            type="number"
+            min={0}
+            max={23}
+            {...bindFormControls("second", (element) =>
+              parseInt(element.value)
+            )}
+          />
+          <label>Second</label>
+        </div>
+      </div>
+      <div>
+        <button onClick={setTime}>Set</button>
+      </div>
+    </>
+  );
+}
+
 export function App() {
   const { state, setState, bindFormCheckbox, bindFormControls } =
-    useFormUtils<ClockConfig>();
+    useFormUtils<ClockConfig>({});
 
   const [ssidList, setSsidList] = useState<SSIDInfo[]>([]);
   const [loadingSsid, setLoadingSsid] = useState(false);
@@ -109,6 +200,15 @@ export function App() {
                   />
                   &nbsp;
                   <label for="dstCheckbox">Daylight Saving Time</label>
+                </td>
+              </tr>
+              <tr>
+                <td>&nbsp;</td>
+              </tr>
+              <tr>
+                <td>Manual Time Set:</td>
+                <td>
+                  <TimeSetPanel />
                 </td>
               </tr>
             </table>

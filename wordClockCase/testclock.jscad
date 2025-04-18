@@ -17,7 +17,7 @@ const letters = [
   "WINDYBSUNNYRKFOR",
   "STORMYRIKCDINNER",
   "CHILLYFWARMKTOMU",
-  "GONLUNCHLBREAKDS"];
+  "GONLUNCHLBREAKAE"];
 
 // const letters = [
 //   "EFGH",
@@ -31,6 +31,7 @@ const letters = [
 const numCols = letters[0].length;
 const numRows = letters.length;
 const cellSize = 10;
+const marginSize = 1;
 
 const fontSize = 4.2;
 const letterWidth = 0.8;
@@ -99,7 +100,12 @@ function letterBoard() {
   const boardHeight = numRows * cellSize;
 
   return modeling.booleans.subtract(
-    modeling.primitives.cuboid({ size: [boardWidth, boardHeight, letterDepth] }),
+    modeling.primitives.cuboid({
+      size: [
+        boardWidth + 2 * marginSize,
+        boardHeight + 2 * marginSize,
+        letterDepth]
+    }),
     ...letters.flatMap((row, rowIndex) =>
       row.split('').map((character, colIndex) =>
         modeling.transforms.translate([
@@ -121,7 +127,7 @@ function letterSchedules() {
   for (let col = 0; col < numCols - 1; col++) {
     shapes.push(
       modeling.primitives.cuboid({
-        size: [scheduleSeparatorThickness, boardHeight, scheduleDepthCol],
+        size: [scheduleSeparatorThickness, boardHeight + 2 * marginSize, scheduleDepthCol],
         center: [-boardWidth / 2 + (col + 1) * cellSize, 0, -scheduleDepthCol / 2],
       }));
   }
@@ -129,7 +135,7 @@ function letterSchedules() {
   for (let row = 0; row < numRows - 1; row++) {
     shapes.push(
       modeling.primitives.cuboid({
-        size: [boardWidth, scheduleSeparatorThickness, scheduleDepthRow],
+        size: [boardWidth + 2 * marginSize, scheduleSeparatorThickness, scheduleDepthRow],
         center: [0, -boardHeight / 2 + (row + 1) * cellSize, -scheduleDepthRow / 2],
       }));
   }
@@ -157,8 +163,8 @@ function frame(width, height, depth, thickness) {
 }
 
 function diffuser() {
-  const boardWidth = numCols * cellSize;
-  const boardHeight = numRows * cellSize;
+  const boardWidth = numCols * cellSize + 2 * marginSize;
+  const boardHeight = numRows * cellSize + 2 * marginSize;
 
   return modeling.primitives.cuboid(
     {
@@ -175,8 +181,8 @@ function watchOuterFrame() {
     modeling.booleans.subtract(
       modeling.transforms.translate([0, 0, - frameDepth / 2 + letterDepth / 2],
         frame(
-          numCols * cellSize,
-          numRows * cellSize,
+          numCols * cellSize + 2 * marginSize,
+          numRows * cellSize + 2 * marginSize,
           frameDepth,
           frameThickness)),
 
@@ -186,6 +192,8 @@ function watchOuterFrame() {
 }
 
 function watchBackCover() {
+  const boardWidth = numCols * cellSize + 2 * marginSize;
+  const boardHeight = numRows * cellSize + 2 * marginSize;
   return modeling.booleans.subtract(
     modeling.booleans.union(
       // Cover back
@@ -194,17 +202,19 @@ function watchBackCover() {
         0,
         - coverInset / 2 + letterDepth / 2 - frameDepth + coverInset],
         modeling.primitives.cuboid({
-          size: [numCols * cellSize + frameThickness, numRows * cellSize + frameThickness, coverInset]
+          size: [
+            boardWidth + frameThickness,
+            boardHeight + frameThickness, coverInset]
         })),
 
       // Cover bulge
       modeling.transforms.translate([0,
-        - (numRows * cellSize - bulgeHeight) / 2,
+        - (boardHeight - bulgeHeight) / 2,
         -bulgeDepth / 2 + letterDepth / 2 - frameDepth + coverInset + 3],
 
         modeling.primitives.roundedCuboid({
           size: [
-            numCols * cellSize + frameThickness * 2,
+            boardWidth + frameThickness * 2,
             bulgeHeight + frameThickness * 2,
             bulgeDepth],
           roundRadius: 3
@@ -218,19 +228,19 @@ function watchBackCover() {
       - coverInset / 2 + letterDepth / 2 - frameDepth + 2 * coverInset + 1],
       modeling.primitives.cuboid({
         size: [
-          numCols * cellSize + 2 * frameThickness,
-          numRows * cellSize + 2 * frameThickness,
+          boardWidth + 2 * frameThickness,
+          boardHeight + 2 * frameThickness,
           coverInset + 2]
       })),
 
     // Bulge cavity
     modeling.transforms.translate([0,
-      - (numRows * cellSize - bulgeHeight) / 2,
+      - (boardHeight - bulgeHeight) / 2,
       -bulgeDepth / 2 + letterDepth / 2 - frameDepth + coverInset + 3 + frameThickness],
 
       modeling.primitives.cuboid({
         size: [
-          numCols * cellSize,
+          boardWidth,
           bulgeHeight,
           bulgeDepth],
         roundRadius: 3
@@ -238,8 +248,8 @@ function watchBackCover() {
 
     // Bulge hole
     modeling.transforms.translate([
-      (numCols * cellSize) / 2 - 15,
-      - (numRows * cellSize) / 2 + 15,
+      boardWidth / 2 - 15,
+      - boardHeight / 2 + 15,
       - bulgeDepth],
 
       modeling.primitives.cylinder({
